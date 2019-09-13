@@ -29,19 +29,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MapboxNavigationViewManager extends SimpleViewManager<FrameLayout> implements Callback<DirectionsResponse> {
+public class MapboxNavigationViewManager extends SimpleViewManager<MapboxNavigationView> {
 
     public static final String REACT_CLASS = "MapboxNavigationView";
 
-    private FrameLayout mapBoxView;
     private ReactApplicationContext context;
+    private MapboxNavigationView mapboxNavigationView;
 
     private ReadableMap origin;
     private ReadableMap destination;
-
-    public MapboxNavigationViewManager() {
-        this.context = null;
-    }
 
     public MapboxNavigationViewManager(ReactApplicationContext reactContext) {
         this.context = reactContext;

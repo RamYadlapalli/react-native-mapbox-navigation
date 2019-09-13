@@ -3,7 +3,9 @@ package com.rnmapboxnavigation.Mapbox;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.RecoverySystem;
 import android.util.Log;
+import android.widget.LinearLayout;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -21,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MapboxNavigationManager extends ReactContextBaseJavaModule implements Callback<DirectionsResponse>{
+public class MapboxNavigationManager extends LinearLayout implements Callback<DirectionsResponse> {
 
     private Context context;
     MapboxNavigation navigation;
@@ -39,10 +41,6 @@ public class MapboxNavigationManager extends ReactContextBaseJavaModule implemen
         });
     }
 
-    @Override
-    public String getName() {
-        return "MapboxNavigation";
-    }
 
 
     @ReactMethod
@@ -77,18 +75,7 @@ public class MapboxNavigationManager extends ReactContextBaseJavaModule implemen
     public void onResponse(Call<DirectionsResponse> call, final Response<DirectionsResponse> response) {
         Log.d("MapboxModule", response.body().routes().get(0).toJson());
 
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("onResponse","onResponse");
-                NavigationLauncherOptions options = NavigationLauncherOptions.builder()
-                        .directionsRoute(response.body().routes().get(0))
-                        .build();
 
-                NavigationLauncher.startNavigation(getCurrentActivity(), options);
-
-            }
-        });
     }
 
     @Override
