@@ -60,50 +60,27 @@ public class MapboxNavigationViewManager extends SimpleViewManager<MapboxNavigat
     }
 
     @Override
-    public FrameLayout createViewInstance(ThemedReactContext reactContext) {
-        mapBoxView = new FrameLayout(reactContext);
-        return mapBoxView;
+    public MapboxNavigationView createViewInstance(ThemedReactContext reactContext) {
+        mapboxNavigationView = new MapboxNavigationView(context);
+        return mapboxNavigationView;
     }
-
+    // do yourself a favor and create on update function, so you get your updates at once. this makes everything much easier. ReadableMap is able to read javascript objects pretty easy.
     @ReactProp(name = "origin")
-    public void setOrigin(FrameLayout view, @Nullable ReadableMap origin) {
+    public void setOrigin(MapboxNavigationView MapboxNavigationView, @Nullable ReadableMap origin) {
         this.origin = origin;
-        if(this.origin != null && this.destination != null) navigate();
+        if(this.origin != null && this.destination != null) updateRoute();
     }
 
+    // do yourself a favor and create on update function, so you get your updates at once. this makes everything much easier. ReadableMap is able to read javascript objects pretty easy.
     @ReactProp(name = "destination")
-    public void setDestination(FrameLayout view, @Nullable ReadableMap destination) {
+    public void setDestination(MapboxNavigationView MapboxNavigationView, @Nullable ReadableMap destination) {
         this.destination = destination;
-        if(this.origin != null && this.destination != null) navigate();
+        if(this.origin != null && this.destination != null) updateRoute();
     }
 
-    public void navigate() {
-        Point origin = Point.fromLngLat(this.origin.getDouble("long"), this.origin.getDouble("lat"));
-        Point destination = Point.fromLngLat(this.destination.getDouble("long"), this.destination.getDouble("lat"));
-
-        NavigationRoute.builder(context)
-                .accessToken(context.getString(R.string.mapbox_access_token))
-                .origin(origin)
-                .destination(destination)
-                .build()
-                .getRoute(this);
-    }
-
-    @Override
-    public void onResponse(Call<DirectionsResponse> call, final Response<DirectionsResponse> response) {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                NavigationLauncherOptions options = NavigationLauncherOptions.builder()
-                        .directionsRoute(response.body().routes().get(0))
-                        .build();
-                NavigationLauncher.startNavigation( context.getCurrentActivity(), options);
-            }
-        });
-    }
-
-    @Override
-    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-
+    public void updateRoute()
+    {
+        //Point.fromLngLat(destination.getDouble("long"),destination.getDouble("lat"));
+        mapboxNavigationView.navigateToDestination(Point.fromLngLat(destination.getDouble("long"),destination.getDouble("lat")));
     }
 }
